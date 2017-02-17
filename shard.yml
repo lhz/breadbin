@@ -1,0 +1,14 @@
+name: breadbin
+version: 0.1.0
+
+authors:
+  - Lars Haugseth <git@larshaugseth.com>
+
+dependencies:
+  stumpy_png:
+    git: https://github.com/l3kn/stumpy_png.git
+    version: -> 4.1.0
+
+crystal: 0.20.5
+
+license: MIT
