@@ -14,6 +14,10 @@ describe Breadbin::Image do
     it "sets the height to that of the png" do
       image.height.should eq(16)
     end
+    it "extracts hires pixels" do
+      image[12,  3].should eq(3)
+      image[ 5, 13].should eq(13)
+    end
   end
 
   describe "#load_multi" do
@@ -26,6 +30,10 @@ describe Breadbin::Image do
     end
     it "sets the height to that of the png" do
       image.height.should eq(16)
+    end
+    it "extracts multicolor pixels" do
+      image[4, 7].should eq(6)
+      image[3, 9].should eq(9)
     end
   end
 end
