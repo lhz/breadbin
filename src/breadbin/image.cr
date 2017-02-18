@@ -2,6 +2,14 @@ require "stumpy_png"
 
 require "./palette"
 
+# FIXME: Move into separate file
+struct StumpyCore::RGBA
+  def to_rgb24 : Int32
+    r, g, b = to_rgb8
+    (r.to_i << 16) + (g.to_i << 8) + b.to_i
+  end
+end
+
 module Breadbin
   class Image
 
@@ -12,24 +20,16 @@ module Breadbin
     getter? multi
     getter pix : Array(Array(UInt8))
 
-    def self.load_hires(pathname)
+    def self.read_hires(pathname)
       image = new(multi = false)
       image.read_png pathname
       image
     end
 
-    def self.load_multi(pathname)
+    def self.read_multi(pathname)
       image = new(multi = true)
       image.read_png pathname
       image
-    end
-
-    def self.png(path)
-      png = StumpyPNG::PNG.new
-      StumpyPNG::Datastream.read(path).chunks.each do |chunk|
-        png.parse_chunk(chunk)
-      end
-      png
     end
 
     def initialize(multi = false)
@@ -40,24 +40,25 @@ module Breadbin
       @palette = Palette.new(Palette::Name::Pepto)
     end
 
-    def read_png(pathname)
-      png = Image.png(pathname)
-      canvas = png.canvas
-      @width  = canvas.width / xstep
-      @height = canvas.height
-      @palette = Palette.matching(png.palette)
+    def [](x, y)
+      @pix[y][x]
+    end
+
+    def read_png(path)
+      png = StumpyPNG::PNG.new
+      StumpyPNG::Datastream.read(path).chunks.each do |chunk|
+        png.parse_chunk(chunk)
+      end
+
+      @width   = png.canvas.width / xstep
+      @height  = png.canvas.height
+      @palette = Palette.matching(png.palette.map &.to_rgb24)
 
       @pix = 0.upto(@height - 1).to_a.map do |y|
         0.upto(@width - 1).to_a.map do |x|
-          r, g, b = canvas[x * xstep, y].to_rgb8
-          rgb = (r.to_i << 16) + (g.to_i << 8) + b.to_i
-          @palette.index_rgb(rgb)
+          @palette.index_rgb png.canvas[x * xstep, y].to_rgb24
         end
       end
-    end
-
-    def [](x, y)
-      @pix[y][x]
     end
 
     private def xstep

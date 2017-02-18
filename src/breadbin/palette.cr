@@ -47,25 +47,20 @@ module Breadbin
       ]
     }
 
-    def self.matching(pngpalette)
-      rgbs = pngpalette.map do |pp|
-        r, g, b = pp.to_rgb8
-        (r.to_i << 16) + (g.to_i << 8) + b.to_i
-      end
+    def self.matching(colors : Array(Int32))
       match = Name.values.find do |name|
-        rgbs.all? { |rgb| RGB_VALUES[name].includes? rgb }
+        colors.all? { |rgb24| RGB_VALUES[name].includes? rgb24 }
       end
       raise NoMatch.new unless match
-
       new(match)
     end
 
     def initialize(@name : Name)
     end
     
-    def index_rgb(rgb) : UInt8
-      index = Palette::RGB_VALUES[@name].index(rgb)
-      raise Palette::UnknownColor.new("RGB value #{rgb.to_s(16)}") unless index
+    def index_rgb(rgb24) : UInt8
+      index = Palette::RGB_VALUES[@name].index(rgb24)
+      raise Palette::UnknownColor.new("RGB value #{rgb24.to_s(16)}") unless index
       index.to_u8
     end
     

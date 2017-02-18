@@ -3,8 +3,8 @@ require "../src/breadbin/image"
 
 describe Breadbin::Image do
 
-  describe "#load_hires" do
-    image = Breadbin::Image.load_hires("spec/fixtures/colodore-16x16.png")
+  describe "#read_hires" do
+    image = Breadbin::Image.read_hires("spec/fixtures/colodore-16x16.png")
     it "sets mode to hires" do
       image.multi?.should eq(false)
     end
@@ -20,8 +20,8 @@ describe Breadbin::Image do
     end
   end
 
-  describe "#load_multi" do
-    image = Breadbin::Image.load_multi("spec/fixtures/colodore-16x16.png")
+  describe "#read_multi" do
+    image = Breadbin::Image.read_multi("spec/fixtures/colodore-16x16.png")
     it "sets mode to multicolor" do
       image.multi?.should eq(true)
     end
