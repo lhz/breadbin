@@ -24,4 +24,28 @@ describe Breadbin::Palette do
       end
     end
   end
+
+  describe "#[]" do
+    palette = Breadbin::Palette.new(Breadbin::Palette::Variant::Colodore)
+    context "given a rgb24 value" do
+      it "returns the color index if the palette contains the given value" do
+        palette[0x8e5029].should eq(8)
+      end
+      it "raises an exception if the palette does not contain the given value" do
+        expect_raises(Breadbin::Palette::UnknownColor) do
+          palette[0x123456]
+        end
+      end
+    end
+    context "given a StumpyCore::RGBA value" do
+      it "returns the color index if the palette contains the given value" do
+        palette[StumpyCore::RGBA.new(0xc4c4_u16, 0x6c6c_u16, 0x7171_u16, 0xffff_u16)].should eq(10)
+      end
+      it "raises an exception if the palette does not contain the given value" do
+        expect_raises(Breadbin::Palette::UnknownColor) do
+          palette[StumpyCore::RGBA.new(0x1234_u16, 0x5678_u16, 0xabcd_u16, 0xffff_u16)]
+        end
+      end
+    end
+  end
 end

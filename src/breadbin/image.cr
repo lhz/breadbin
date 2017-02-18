@@ -13,19 +13,19 @@ module Breadbin
     getter? multi
     getter pix : Array(Array(UInt8))
 
-    def self.read_hires(pathname)
+    def self.read_hires(pathname : String)
       image = new(multi = false)
       image.read_png pathname
       image
     end
 
-    def self.read_multi(pathname)
+    def self.read_multi(pathname : String)
       image = new(multi = true)
       image.read_png pathname
       image
     end
 
-    def initialize(multi = false)
+    def initialize(multi : Bool = false)
       @multi   = multi
       @width   = 0
       @height  = 0
@@ -33,13 +33,13 @@ module Breadbin
       @palette = Palette.new(Palette::Variant::Pepto)
     end
 
-    def [](x, y)
+    def [](x : Int32, y : Int32)
       @pix[y][x]
     end
 
-    def read_png(path)
+    def read_png(pathname : String)
       png = StumpyPNG::PNG.new
-      StumpyPNG::Datastream.read(path).chunks.each do |chunk|
+      StumpyPNG::Datastream.read(pathname).chunks.each do |chunk|
         png.parse_chunk(chunk)
       end
 
