@@ -45,17 +45,17 @@ module Breadbin
 
       @palette = Palette.matching(png.palette.map &.to_rgb24)
 
-      @width   = png.canvas.width / xstep
+      @width   = png.canvas.width / pixel_width
       @height  = png.canvas.height
 
       @pix = 0.upto(@height - 1).to_a.map do |y|
         0.upto(@width - 1).to_a.map do |x|
-          @palette[png.canvas[x * xstep, y]]
+          @palette[png.canvas[x * pixel_width, y]]
         end
       end
     end
 
-    private def xstep
+    private def pixel_width
       multi? ? 2 : 1
     end
   end
