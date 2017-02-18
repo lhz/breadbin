@@ -1,4 +1,4 @@
 require "spec"
 require "../src/breadbin"
 
-Spec.add_formatter Spec::VerboseFormatter.new
+# Spec.add_formatter Spec::VerboseFormatter.new

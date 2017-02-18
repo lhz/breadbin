@@ -1,14 +1,7 @@
 require "stumpy_png"
 
+require "./stumpy_mods"
 require "./palette"
-
-# FIXME: Move into separate file
-struct StumpyCore::RGBA
-  def to_rgb24 : Int32
-    r, g, b = to_rgb8
-    (r.to_i << 16) + (g.to_i << 8) + b.to_i
-  end
-end
 
 module Breadbin
   class Image
@@ -50,13 +43,14 @@ module Breadbin
         png.parse_chunk(chunk)
       end
 
+      @palette = Palette.matching(png.palette.map &.to_rgb24)
+
       @width   = png.canvas.width / xstep
       @height  = png.canvas.height
-      @palette = Palette.matching(png.palette.map &.to_rgb24)
 
       @pix = 0.upto(@height - 1).to_a.map do |y|
         0.upto(@width - 1).to_a.map do |x|
-          @palette[png.canvas[x * xstep, y].to_rgb24]
+          @palette[png.canvas[x * xstep, y]]
         end
       end
     end
