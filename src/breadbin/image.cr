@@ -37,7 +37,7 @@ module Breadbin
       @width   = 0
       @height  = 0
       @pix     = [] of Array(UInt8)
-      @palette = Palette.new(Palette::Name::Pepto)
+      @palette = Palette.new(Palette::Variant::Pepto)
     end
 
     def [](x, y)
@@ -56,7 +56,7 @@ module Breadbin
 
       @pix = 0.upto(@height - 1).to_a.map do |y|
         0.upto(@width - 1).to_a.map do |x|
-          @palette.index_rgb png.canvas[x * xstep, y].to_rgb24
+          @palette[png.canvas[x * xstep, y].to_rgb24]
         end
       end
     end
