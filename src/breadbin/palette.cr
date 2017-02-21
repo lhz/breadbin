@@ -64,6 +64,10 @@ module Breadbin
       @index_rgb[rgb24]? || raise Palette::UnknownColor.new("Unknown RGB value #{rgb24.to_s(16)}")
     end
 
+    def index_to_rgba(index : UInt8)
+      rgb24_to_rgba RGB_VALUES[@variant][index.to_i]
+    end
+
     private def rgb24_to_rgba(rgb24 : Int32)
       r = ((rgb24 & 0xff0000) >> 16).to_u16
       g = ((rgb24 & 0x00ff00) >>  8).to_u16
