@@ -147,9 +147,9 @@ module Breadbin
       koala = Bytes.new(10001)
       cells = 1000.times do |i|
         cell = cell_multi(i % 40, i / 40, bgcolor)
-        koala[i] = cell[0]
-        koala[1000 + i] = cell[1]
-        8.times { |j| koala[2000 + 8 * i + j] = cell[2 + j] }
+        koala[8000 + i] = cell[0]
+        koala[9000 + i] = cell[1]
+        8.times { |j| koala[8 * i + j] = cell[2 + j] }
       end
       koala[10000] = bgcolor
       koala

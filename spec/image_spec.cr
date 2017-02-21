@@ -78,18 +78,16 @@ describe Breadbin::Image do
 
     describe "#to_koala" do
       koala = image.to_koala(0_u8)
-      addr  = Bytes.new(2)
-      addr[0] = 0x00_u8
-      addr[1] = 0x40_u8
-      File.open("/tmp/test.kla", "wb") { |f|
-        f.write addr
-        f.write koala
-      }
+      # addr  = Bytes[0x00, 0x40]
+      # File.open("/tmp/test.kla", "wb") { |f|
+      #   f.write addr
+      #   f.write koala
+      # }
       it "returns an array of bytes representing the image in KoalaPainter format" do
         koala.size.should eq(10001)
-        #koala[8*40+12].should eq(107)
-        #koala[8*40+12 + 1000].should eq(12)
-        #koala[8*40+12 + 2000, 8].should eq([228, 212, 229, 232, 229, 248, 229, 248])
+        koala[8000 + 8*40 + 12].should eq(107)
+        koala[9000 + 8*40 + 12].should eq(12)
+        koala[8*(8*40 + 12), 8].should eq(Bytes[228, 212, 229, 232, 229, 248, 229, 248])
       end
     end
   end
