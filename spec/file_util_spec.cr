@@ -1,3 +1,5 @@
+require "file_utils"
+
 require "./spec_helper"
 require "../src/breadbin/file_util"
 
@@ -28,5 +30,7 @@ describe Breadbin::FileUtil do
     it "contains the content from byte two onwards" do
       buffer[2, length - 2].should eq(content)
     end
+
+    FileUtils.rm filename
   end
 end
