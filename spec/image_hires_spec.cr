@@ -44,11 +44,21 @@ describe Breadbin::Image::Hires do
       end
     end
 
-    # describe "#cell_at" do
-    #   bytes = image.cell_at(12, 8)
-    #   it "returns an array of color and bitmap data for the given 8x8 cell" do
-    #     bytes.should eq([107, 12, 228, 212, 229, 232, 229, 248, 229, 248])
-    #   end
-    # end
+    describe "#cell_at" do
+      bytes = image.cell_at(5, 4)
+      it "returns an array of color and bitmap data for the given 8x8 cell" do
+        bytes.should eq([176, 128, 192, 224, 240, 232, 244, 232, 244])
+      end
+    end
+
+    describe "#to_bytes" do
+      bytes = image.to_bytes
+      it "returns an array of bytes representing the image in ArtStudio? format" do
+        bytes.size.should eq(9000)
+        cn = 20 + 8*40
+        bytes[8*cn, 8].should eq(Bytes[7, 11, 7, 11, 7, 11, 7, 11])
+        bytes[8000 + cn].should eq(0xB5)
+      end
+    end
   end
 end

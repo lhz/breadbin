@@ -56,6 +56,33 @@ module Breadbin::Image
     end
     StumpyPNG.write canvas, pathname
   end
+
+  private def pix_rect(x0 : Int32, y0 : Int32, w : Int32, h : Int32) : Array(UInt8)
+    h.times.map { |y|
+      w.times.map { |x|
+        @pix[y0 + y][x0 + x]
+      }.to_a
+    }.to_a.flatten
+  end
+
+  private def most_used_colors(colors : Array(UInt8), bgcolor : UInt8 | Nil) : Array(UInt8)
+    freq = Array({UInt8, Int32}).new(16)
+    16.times { |i|
+      freq << {i.to_u8, 0}
+    }
+    colors.reject {|c|
+      c == bgcolor
+    }.each { |c|
+      freq[c] = {freq[c][0], freq[c][1] + 1}
+    }
+    freq.sort_by {|k, v| -v}.map(&.first)
+  end
+
+  # FIXME: Move to Palette?
+  private def nearest_color_in_set(color : UInt8, set : Array(UInt8))
+    lum = [0, 255, 80, 159, 96, 128, 64, 191, 96, 64, 128, 80, 120, 191, 120, 159]
+    set.min_by {|c| (lum[c] - lum[color]).abs }
+  end
 end
 
 require "./image/hires"

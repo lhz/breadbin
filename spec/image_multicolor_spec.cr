@@ -34,9 +34,9 @@ describe Breadbin::Image::Multicolor do
       it "returns an array of bytes representing the image in KoalaPainter format" do
         koala.size.should eq(10001)
         cn = 8*40 + 12
+        koala[8*cn, 8].should eq(Bytes[228, 212, 229, 232, 229, 248, 229, 248])
         koala[8000 + cn].should eq(107)
         koala[9000 + cn].should eq(12)
-        koala[8*cn, 8].should eq(Bytes[228, 212, 229, 232, 229, 248, 229, 248])
       end
     end
   end
