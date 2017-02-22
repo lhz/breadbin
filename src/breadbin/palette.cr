@@ -39,11 +39,15 @@ module Breadbin
       ]
     }
 
-    def self.matching(colors : Array(Int32))
+    def self.matching(colors : Array(Int32)) : Palette
       match = Variant.values.find do |variant|
-        colors.all? { |rgb24| RGB_VALUES[variant].includes? rgb24 }
+        colors.reject { |c|
+          c == 0xffffff # Ignore padded unused entries
+        }.all? { |rgb24|
+          RGB_VALUES[variant].includes? rgb24
+        }
       end
-      raise NoMatch.new unless match
+      raise NoMatch.new(colors.map { |c| "0x%06x" % c }.join(" ")) unless match
       new(match)
     end
 
