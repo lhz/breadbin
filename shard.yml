@@ -6,8 +6,8 @@ authors:
 
 dependencies:
   stumpy_png:
-    git: https://github.com/l3kn/stumpy_png.git
-    version: -> 4.1.0
+    github: l3kn/stumpy_png
+    version: 4.1.0
 
 crystal: 0.20.5
 

@@ -1,4 +1,5 @@
 bin
 lib
 shard.lock
+.shards
 
