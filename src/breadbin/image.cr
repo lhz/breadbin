@@ -3,8 +3,13 @@ require "stumpy_png"
 require "./stumpy_mods"
 require "./palette"
 
+# A module for wrapping functionality common to both `Image::Hires`
+# and `Image::Multicolor`
 module Breadbin::Image
 
+  alias Color = UInt8
+
+  # A 2-dimensional pixel matrix of color nybbles
   alias Pixels = Array(Array(UInt8))
 
   struct Rectangle

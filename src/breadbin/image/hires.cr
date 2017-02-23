@@ -39,7 +39,9 @@ class Breadbin::Image::Hires
     [colors[1] * 16 + colors[0], bytes].flatten
   end
 
-  # Get a bytes representation of an image whose dimensions are 320x200 pixels
+  # Get a bytes representation of an image whose dimensions are 320x200 pixels.
+  # If optional parameter *pad* if set to true, pads bitmap data so the following
+  # section is page aligned
   def to_bytes(pad : Bool = false) : Bytes
     raise InvalidDimensions.new unless width == 320 && height == 200
     bytes = Bytes.new(pad ? 9192 : 9000)

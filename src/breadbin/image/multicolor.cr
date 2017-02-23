@@ -1,12 +1,22 @@
+# A low resolution image using any three colors plus the background color
+# within each 4x8 pixel cell.
+#
+# Each pixel in a `Multicolor` image has double horizontal width. When
+# converted from a PNG image with `.from_png` only even horizontal pixels
+# are considered.
 class Breadbin::Image::Multicolor
   include Image
 
   @@pixel_width = 2
 
+  # Creates an image with the given *width*, *height* and *palette*.
   def initialize(@width, @height, @palette = Palette.new(Palette::Variant::Colodore))
     @pix = Pixels.new
   end
 
+  # Get the byte representation of the 4x1 pixel area at *x* and *y*,
+  # with *clist* holding a list of the 3 colors that should be mapped
+  # to the "01", "10" and "11" bit pairs respectively
   def byte_at(x : Int32, y : Int32, clist : Array(UInt8)) : UInt8
     colors = [1, 0, 2].map {|i| clist[i] }
     self[x..(x + 3), y].each.with_object([0_u8, 64_u8]) { |c, o|
@@ -15,6 +25,9 @@ class Breadbin::Image::Multicolor
     }[0]
   end
 
+  # Get a 10 bytes representation of the 4x8 pixel cell at the given *col* and *row*,
+  # where the first byte holds the screen color nybbles, the second byte holds the
+  # color map nybble and the remaining 8 bytes holds the bitmap data
   def cell_at(col : Int32, row : Int32, bgcolor : UInt8 = 0, sort_first : Bool = false) : Array(UInt8)
     cpix = pix_rect(Rectangle.new(col * 4, row * 8, 4, 8))
     #dump "cpix", cpix
@@ -41,7 +54,9 @@ class Breadbin::Image::Multicolor
     [colors[0] * 16 + colors[1], colors[2], bytes].flatten
   end
 
-  # Get a bytes representation of an image whose dimensions are 160x200 pixels
+  # Get a bytes representation of an image whose dimensions are 160x200 pixels.
+  # If optional parameter *pad* if set to true, pads bitmap and screen data so
+  # the following sections are page aligned
   def to_bytes(bgcolor : UInt8 = 0_u8, pad : Bool = false) : Bytes
     raise InvalidDimensions.new unless width == 160 && height == 200
     bytes = Bytes.new(pad ? 10217 : 10001, 0_u8)
@@ -58,6 +73,8 @@ class Breadbin::Image::Multicolor
     bytes
   end
 
+  # Lookup a color within an array of colors and return its 1-based index within
+  # the array, or 0 if its not included
   private def lookup_color(c : UInt8, colors : Array(UInt8 | Array(UInt8))) : UInt8
     colors.each.with_index do |ci, i|
       return (i + 1).to_uint8 if ci == c || (ci.is_a?(Array) && ci.includes?(c))
