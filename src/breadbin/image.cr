@@ -7,16 +7,26 @@ module Breadbin::Image
 
   alias Pixels = Array(Array(UInt8))
 
+  struct Rectangle
+    property x, y, w, h
+    def initialize(@x : Int32, @y : Int32, @w : Int32, @h : Int32)
+    end
+  end
+
   property width   : Int32
   property height  : Int32
   property palette : Palette
 
   macro included
-    def self.from_png(pathname : String)
+    def self.from_png(pathname : String, rect : Tuple | Rectangle? = nil)
       png = StumpyPNG::PNG.__read(pathname)
-      pal = Palette.matching(png.palette.map &.to_rgb24)
-      new(png.canvas.width / @@pixel_width, png.canvas.height, pal).tap do |image|
-        image.convert_png png
+      if rect.nil?
+        rect = Rectangle.new(0, 0, png.canvas.width / @@pixel_width, png.canvas.height)
+      elsif rect.is_a?(Tuple)
+        rect = Rectangle.new(*rect)
+      end
+      new(rect.w, rect.h, Palette.matching(png.palette.map &.to_rgb24)).tap do |image|
+        image.convert_png png, rect
       end
     end
   end
@@ -37,9 +47,9 @@ module Breadbin::Image
     (@height / 8).ceil
   end
 
-  def convert_png(png : StumpyPNG::PNG)
-    @pix = 0.upto(@height - 1).to_a.map do |y|
-      0.upto(@width - 1).to_a.map do |x|
+  def convert_png(png : StumpyPNG::PNG, rect : Rectangle)
+    @pix = rect.y.upto(rect.h - 1).to_a.map do |y|
+      rect.x.upto(rect.w - 1).to_a.map do |x|
         palette[png.canvas[x * @@pixel_width, y]]
       end
     end
@@ -57,10 +67,10 @@ module Breadbin::Image
     StumpyPNG.write canvas, pathname
   end
 
-  private def pix_rect(x0 : Int32, y0 : Int32, w : Int32, h : Int32) : Array(UInt8)
-    h.times.map { |y|
-      w.times.map { |x|
-        @pix[y0 + y][x0 + x]
+  private def pix_rect(rect : Rectangle) : Array(UInt8)
+    rect.h.times.map { |y|
+      rect.w.times.map { |x|
+        @pix[rect.y + y][rect.x + x]
       }.to_a
     }.to_a.flatten
   end

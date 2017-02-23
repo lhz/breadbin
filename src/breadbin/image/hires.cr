@@ -16,7 +16,7 @@ module Breadbin::Image
     end
 
     def cell_at(col : Int32, row : Int32, sort_first : Bool = false) : Array(UInt8)
-      cpix = pix_rect(col * 8, row * 8, 8, 8)
+      cpix = pix_rect(Rectangle.new(col * 8, row * 8, 8, 8))
       if sort_first
         colors = (most_used_colors(cpix, nil).sort + [0_u8, 0_u8]).first(2)
       else

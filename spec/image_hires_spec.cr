@@ -61,4 +61,29 @@ describe Breadbin::Image::Hires do
       end
     end
   end
+
+  context "from an existing png image with a crop rectangle" do
+    image = Breadbin::Image::Hires.from_png("spec/fixtures/bitmap-hires.png", {112, 64, 40, 32})
+
+    describe ".from_png" do
+      it "sets the width to that of the crop area" do
+        image.width.should eq(40)
+      end
+      it "sets the height to that of the crop area" do
+        image.height.should eq(32)
+      end
+    end
+
+    describe "#cell_width" do
+      it "returns the width of the image in cells" do
+        image.cell_width.should eq(5)
+      end
+    end
+
+    describe "#cell_height" do
+      it "returns the height of the image in cells" do
+        image.cell_height.should eq(4)
+      end
+    end
+  end
 end
