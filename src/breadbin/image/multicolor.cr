@@ -7,6 +7,8 @@
 class Breadbin::Image::Multicolor
   include Image
 
+  alias ColorList = Tuple(UInt8, UInt8, UInt8)
+
   @@pixel_width = 2
 
   # Creates an image with the given *width*, *height* and *palette*.
@@ -15,9 +17,9 @@ class Breadbin::Image::Multicolor
   end
 
   # Get the byte representation of the 4x1 pixel area at *x* and *y*,
-  # with *clist* holding a list of the 3 colors that should be mapped
+  # with *clist* holding the triplet of colors that should be mapped
   # to the "01", "10" and "11" bit pairs respectively
-  def byte_at(x : Int32, y : Int32, clist : Array(UInt8)) : UInt8
+  def byte_at(x : Int32, y : Int32, clist : ColorList) : UInt8
     colors = [1, 0, 2].map {|i| clist[i] }
     self[x..(x + 3), y].each.with_object([0_u8, 64_u8]) { |c, o|
       o[0] += o[1] * lookup_color(c, colors)
@@ -52,6 +54,17 @@ class Breadbin::Image::Multicolor
       end.to_a.sum
     end.to_a
     [colors[0] * 16 + colors[1], colors[2], bytes].flatten
+  end
+
+  # Get a 63 bytes sprite representation of the 12x21 pixel region at the given
+  # *x* and *y* position, with *clist* holding the triplet of colors that should
+  # be mapped to the "01", "10" and "11" bit pairs respectively
+  def sprite_at(x : Int32, y : Int32, clist : ColorList) : Bytes
+    21.times.map { |row|
+      3.times.map { |col|
+        byte_at x + 4 * col, y + row, clist
+      }
+    }.to_a.flatten
   end
 
   # Get a bytes representation of an image whose dimensions are 160x200 pixels.

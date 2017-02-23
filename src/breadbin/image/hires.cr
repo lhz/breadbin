@@ -39,6 +39,17 @@ class Breadbin::Image::Hires
     [colors[1] * 16 + colors[0], bytes].flatten
   end
 
+  # Get a 63 bytes sprite representation of the 24x21 pixel region at the given
+  # *x* and *y* position, with *clist* holding the triplet of colors that should
+  # be mapped to the "01", "10" and "11" bit pairs respectively
+  def sprite_at(x : Int32, y : Int32, color : UInt8) : Bytes
+    21.times.map { |row|
+      3.times.map { |col|
+        byte_at x + 8 * col, y + row, color
+      }
+    }.to_a.flatten
+  end
+
   # Get a bytes representation of an image whose dimensions are 320x200 pixels.
   # If optional parameter *pad* if set to true, pads bitmap data so the following
   # section is page aligned
