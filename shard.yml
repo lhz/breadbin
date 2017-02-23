@@ -6,9 +6,8 @@ authors:
 
 dependencies:
   stumpy_png:
-    github: l3kn/stumpy_png
-    version: 4.1.0
+    github: lhz/stumpy_png
 
-crystal: 0.20.5
+crystal: 0.21.0
 
 license: MIT
