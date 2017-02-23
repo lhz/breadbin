@@ -13,6 +13,8 @@ module Breadbin::Image
     end
   end
 
+  class InvalidDimensions < Exception; end
+
   property width   : Int32
   property height  : Int32
   property palette : Palette

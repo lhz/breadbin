@@ -29,14 +29,35 @@ describe Breadbin::Image::Multicolor do
       end
     end
 
-    describe "#to_koala" do
-      koala = image.to_koala(0_u8)
-      it "returns an array of bytes representing the image in KoalaPainter format" do
-        koala.size.should eq(10001)
-        cn = 8*40 + 12
-        koala[8*cn, 8].should eq(Bytes[228, 212, 229, 232, 229, 248, 229, 248])
-        koala[8000 + cn].should eq(107)
-        koala[9000 + cn].should eq(12)
+    describe "#to_bytes" do
+      context "without padding (default)" do
+        bytes = image.to_bytes(0_u8)
+        it "returns an array of 10001 bytes representing the image in KoalaPainter format" do
+          bytes.size.should eq(10001)
+          cn = 8*40 + 12
+          bytes[8*cn, 8].should eq(Bytes[228, 212, 229, 232, 229, 248, 229, 248])
+          bytes[8000 + cn].should eq(107)
+          bytes[9000 + cn].should eq(12)
+        end
+      end
+      context "with padding" do
+        bytes = image.to_bytes(0_u8, true)
+        it "returns an array of bytes representing the image in padded format" do
+          bytes.size.should eq(10217)
+          cn = 8*40 + 12
+          bytes[8*cn, 8].should eq(Bytes[228, 212, 229, 232, 229, 248, 229, 248])
+          bytes[8192 + cn].should eq(107)
+          bytes[9216 + cn].should eq(12)
+          bytes[10216].should eq(0)
+        end
+      end
+      context "with wrong dimensions" do
+        bad_image = Breadbin::Image::Multicolor.new(16, 16)
+        it "raises an exception" do
+          expect_raises Breadbin::Image::InvalidDimensions do
+            bad_image.to_bytes
+          end
+        end
       end
     end
   end

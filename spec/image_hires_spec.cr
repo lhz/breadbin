@@ -53,7 +53,7 @@ describe Breadbin::Image::Hires do
 
     describe "#to_bytes" do
       bytes = image.to_bytes
-      it "returns an array of bytes representing the image in ArtStudio? format" do
+      it "returns an array of bytes representing the image in ArtStudio format" do
         bytes.size.should eq(9000)
         cn = 20 + 8*40
         bytes[8*cn, 8].should eq(Bytes[7, 11, 7, 11, 7, 11, 7, 11])
