@@ -6,7 +6,7 @@ authors:
 
 dependencies:
   stumpy_png:
-    github: lhz/stumpy_png
+    github: l3kn/stumpy_png
 
 crystal: 0.21.0
 
