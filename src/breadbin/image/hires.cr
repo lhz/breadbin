@@ -12,10 +12,11 @@ class Breadbin::Image::Hires
   # Get the byte representation of the 8x1 pixel area at *x* and *y*,
   # with *color* getting a "1" bit and any other color getting a "0" bit
   def byte_at(x : Int32, y : Int32, color : UInt8) : UInt8
-    self[x..(x + 7), y].each.with_object([0_u8, 128_u8]) { |c, o|
-      o[0] += o[1] if c == color
-      o[1] >>= 1
-    }[0]
+    cpix = pix_rect(Rectangle.new(x, y, 8, 1))
+    masks = {128_u8, 64_u8, 32_u8, 16_u8, 8_u8, 4_u8, 2_u8, 1_u8}
+    8.times.map do |x|
+      cpix[x] == color ? masks[x] : 0_u8
+    end.to_a.sum
   end
 
   # Get a 9 bytes representation of the 8x8 pixel cell at the given *col* and *row*,
@@ -42,12 +43,16 @@ class Breadbin::Image::Hires
   # Get a 63 bytes sprite representation of the 24x21 pixel region at the given
   # *x* and *y* position, with *clist* holding the triplet of colors that should
   # be mapped to the "01", "10" and "11" bit pairs respectively
-  def sprite_at(x : Int32, y : Int32, color : UInt8) : Bytes
-    21.times.map { |row|
-      3.times.map { |col|
-        byte_at x + 8 * col, y + row, color
+  def sprite_at(x : Int32, y : Int32, color : UInt8) : Array(UInt8)
+    21.times.flat_map { |row|
+      3.times.flat_map { |col|
+        if x + 8 * col < @width && y + row < @height
+          byte_at x + 8 * col, y + row, color
+        else
+          0_u8
+        end
       }
-    }.to_a.flatten
+    }.to_a + [0_u8]
   end
 
   # Get a bytes representation of an image whose dimensions are 320x200 pixels.
