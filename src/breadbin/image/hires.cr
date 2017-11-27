@@ -33,7 +33,14 @@ class Breadbin::Image::Hires
     bytes = 8.times.map do |y|
       8.times.map do |x|
         c = cpix[y * 8 + x]
-        c = nearest_color_in_set(c, colors) unless colors.includes?(c)
+        if !colors.includes?(c)
+          if colfix && colfix == "nearest"
+            c = nearest_color_in_set(c, colors)
+          else
+            raise InvalidColors.new("Too many colors in cell at column %d row %d: %s" %
+                                    [col, row, cpix.sort.uniq.inspect])
+          end
+        end
         (masks[x] * (colors.index(c) || 0)).to_u8
       end.to_a.sum
     end.to_a

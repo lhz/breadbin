@@ -61,4 +61,16 @@ describe Breadbin::Image::Multicolor do
       end
     end
   end
+
+  context "from an existing png image with too many colors" do
+    image = Breadbin::Image::Hires.from_png("spec/fixtures/bitmap-multi-invalid.png")
+
+    describe "#cell_at" do
+      it "raises InvalidColors in cell with more than 3 unique non-background colors" do
+        expect_raises(Breadbin::Image::InvalidColors, /column 1 row 2/) do
+          image.cell_at(1, 2)
+        end
+      end
+    end
+  end
 end

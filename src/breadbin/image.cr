@@ -19,10 +19,12 @@ module Breadbin::Image
   end
 
   class InvalidDimensions < Exception; end
+  class InvalidColors < Exception; end
 
   property width   : Int32
   property height  : Int32
   property palette : Palette
+  property colfix  : String?
 
   macro included
     def self.from_png(pathname : String, rect : Tuple | Rectangle? = nil)
@@ -42,7 +44,7 @@ module Breadbin::Image
     @pix[y][x]
   end
 
-  def []=(x : Int32, y : Int32, color : Int32)
+  def []=(x : Int32, y : Int32, color : (Int32 | UInt8))
     @pix[y][x] = color.to_u8
   end
 

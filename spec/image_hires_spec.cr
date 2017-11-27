@@ -38,10 +38,12 @@ describe Breadbin::Image::Hires do
     end
 
     describe "#[]=" do
+      oldval = image[12, 13]
       image[12, 13] = 1
       it "sets the color index of the pixel at the given position" do
         image[12, 13].should eq(1)
       end
+      image[12, 13] = oldval
     end
 
     describe "#cell_at" do
@@ -83,6 +85,18 @@ describe Breadbin::Image::Hires do
     describe "#cell_height" do
       it "returns the height of the image in cells" do
         image.cell_height.should eq(4)
+      end
+    end
+  end
+
+  context "from an existing png image with too many colors" do
+    image = Breadbin::Image::Hires.from_png("spec/fixtures/bitmap-hires-invalid.png")
+
+    describe "#cell_at" do
+      it "raises InvalidColors in cell with more than 2 unique colors" do
+        expect_raises(Breadbin::Image::InvalidColors, /column 3 row 2/) do
+          image.cell_at(3, 2)
+        end
       end
     end
   end

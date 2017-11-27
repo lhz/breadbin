@@ -48,7 +48,12 @@ class Breadbin::Image::Multicolor
       4.times.map do |x|
         c = cpix[y * 4 + x]
         if c != bgcolor && !colors.includes?(c)
-          c = nearest_color_in_set(c, colors + [bgcolor])
+          if colfix && colfix == "nearest"
+            c = nearest_color_in_set(c, colors + [bgcolor])
+          else
+            raise InvalidColors.new("Too many colors in cell at column %d row %d: %s" %
+                                    [col, row, cpix.sort.uniq.inspect])
+          end
         end
         if c != bgcolor
           (masks[x] * ((colors.index(c) || -1) + 1)).to_u8
