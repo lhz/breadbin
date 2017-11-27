@@ -10,7 +10,7 @@ module Breadbin::Image
   alias Color = UInt8
 
   # A 2-dimensional pixel matrix of color nybbles
-  alias Pixels = Array(Array(UInt8))
+  alias Pixels = Array(Array(Color))
 
   struct Rectangle
     property x, y, w, h
@@ -44,7 +44,7 @@ module Breadbin::Image
     @pix[y][x]
   end
 
-  def []=(x : Int32, y : Int32, color : (Int32 | UInt8))
+  def []=(x : Int32, y : Int32, color : (Int32 | Color))
     @pix[y][x] = color.to_u8
   end
 
@@ -76,7 +76,7 @@ module Breadbin::Image
     StumpyPNG.write canvas, pathname
   end
 
-  private def pix_rect(rect : Rectangle) : Array(UInt8)
+  private def pix_rect(rect : Rectangle) : Array(Color)
     rect.h.times.map { |y|
       rect.w.times.map { |x|
         @pix[rect.y + y][rect.x + x]
@@ -84,8 +84,8 @@ module Breadbin::Image
     }.to_a.flatten
   end
 
-  private def most_used_colors(colors : Array(UInt8), bgcolor : UInt8 | Nil) : Array(UInt8)
-    freq = Array({UInt8, Int32}).new(16)
+  private def most_used_colors(colors : Array(Color), bgcolor : Color | Nil) : Array(Color)
+    freq = Array({Color, Int32}).new(16)
     16.times { |i|
       freq << {i.to_u8, 0}
     }
@@ -98,7 +98,7 @@ module Breadbin::Image
   end
 
   # FIXME: Move to Palette?
-  private def nearest_color_in_set(color : UInt8, set : Array(UInt8))
+  private def nearest_color_in_set(color : Color, set : Array(Color))
     lum = [0, 255, 80, 159, 96, 128, 64, 191, 96, 64, 128, 80, 120, 191, 120, 159]
     set.min_by {|c| (lum[c] - lum[color]).abs }
   end
