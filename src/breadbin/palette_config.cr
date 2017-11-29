@@ -4,7 +4,9 @@ module Breadbin
   class PaletteConfig
 
     alias Config = Hash(String, Array(Int32))
+
     class ConfigNotFound < Exception; end
+
     @@config : Config?
 
     def self.config() : Config
