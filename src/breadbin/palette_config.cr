@@ -10,10 +10,18 @@ module Breadbin
     class ConfigNotFound < Exception; end
     @@config : Config?
 
-    def self.config() : Config
-      @@config ||= load_config
+    def self.[](key) : Array(Int32)
+      config[key]
+    end
+
+    def self.variants : Array(String)
+      config.keys
     end
     
+    private def self.config() : Config
+      @@config ||= load_config
+    end
+
     private def self.load_config() : Config
       palettes = JSON.parse(File.read(config_file))
       palettes.each_with_object(Config.new) do |palette, config|
