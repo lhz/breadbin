@@ -3,10 +3,11 @@ require "json"
 module Breadbin
   class PaletteConfig
 
+    PATH_ENV     = "BREADBIN_CONFIG_PATH"
+    DEFAULT_PATH = "~/.config/breadbin"
+
     alias Config = Hash(String, Array(Int32))
-
     class ConfigNotFound < Exception; end
-
     @@config : Config?
 
     def self.config() : Config
@@ -23,7 +24,7 @@ module Breadbin
     end
 
     private def self.config_file() : String
-      path = ENV.fetch("BREADBIN_CONFIG_PATH", "~/.config/breadbin")
+      path = ENV.fetch(PATH_ENV, DEFAULT_PATH)
       File.expand_path(File.join path, "palettes.json").tap do |path|
         raise ConfigNotFound.new(path) unless File.exists?(path)
       end
