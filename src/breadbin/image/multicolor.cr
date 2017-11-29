@@ -12,7 +12,7 @@ class Breadbin::Image::Multicolor
   @@pixel_width = 2
 
   # Creates an image with the given *width*, *height* and *palette*.
-  def initialize(@width, @height, @palette = Palette.new(Palette::Variant::Colodore))
+  def initialize(@width, @height, @palette = Palette.new("colodore"))
     @pix = Pixels.new
   end
 

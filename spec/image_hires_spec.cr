@@ -8,7 +8,7 @@ describe Breadbin::Image::Hires do
 
     describe ".from_png" do
       it "picks the expected palette variant" do
-        image.palette.variant.should eq(Breadbin::Palette::Variant::ViceOld)
+        image.palette.variant.should eq("vice_old")
       end
       it "sets the width to that of the png" do
         image.width.should eq(320)

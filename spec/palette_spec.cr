@@ -7,13 +7,13 @@ describe Breadbin::Palette do
     context "given an array of colors from the Pepto palette" do
       palette = Breadbin::Palette.matching [0x68372b, 0x6f4f25, 0x9ad284]
       it "returns an instance of the Pepto palette" do
-        palette.variant.should eq(Breadbin::Palette::Variant::Pepto)
+        palette.variant.should eq("pepto")
       end
     end
     context "given an array of colors from the Levy palette" do
       palette = Breadbin::Palette.matching [0xf4ee5c, 0xd47e34, 0x74a2ec]
       it "returns an instance of the Levy palette" do
-        palette.variant.should eq(Breadbin::Palette::Variant::Levy)
+        palette.variant.should eq("levy")
       end
     end
     context "given an array of unknown colors" do
@@ -26,7 +26,7 @@ describe Breadbin::Palette do
   end
 
   describe "#[]" do
-    palette = Breadbin::Palette.new(Breadbin::Palette::Variant::Colodore)
+    palette = Breadbin::Palette.new("colodore")
     context "given a rgb24 value" do
       it "returns the color index if the palette contains the given value" do
         palette[0x8e5029].should eq(8)

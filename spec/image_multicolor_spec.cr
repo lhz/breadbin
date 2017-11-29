@@ -8,7 +8,7 @@ describe Breadbin::Image::Multicolor do
 
     describe "#read" do
       it "picks the expected palette variant" do
-        image.palette.variant.should eq(Breadbin::Palette::Variant::Pepto)
+        image.palette.variant.should eq("pepto")
       end
       it "sets the width to half that of the png" do
         image.width.should eq(160)
