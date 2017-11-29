@@ -9,14 +9,20 @@ module Breadbin
 
     property variant
 
-    CONFIG = load_config
+    alias Config = Hash(String, Array(Int32))
+    class ConfigNotFound < Exception; end
+    @@config : Config?
 
+    def self.config() : Config
+      @@config ||= load_config
+    end
+    
     def self.matching(colors : Array(Int32)) : Palette
-      match = CONFIG.keys.find do |variant|
+      match = config().keys.find do |variant|
         colors.reject { |c|
           c == 0xffffff # Ignore padded unused entries
         }.all? { |rgb24|
-          CONFIG[variant].includes? rgb24
+          config[variant].includes? rgb24
         }
       end
       raise NoMatch.new(colors.map { |c| "0x%06x" % c }.join(" ")) unless match
@@ -26,7 +32,7 @@ module Breadbin
     def initialize(@variant : String)
       @index_rgb  = Hash(Int32, UInt8).new
       @index_rgba = Hash(StumpyCore::RGBA, UInt8).new
-      Palette::CONFIG[@variant].each.with_index do |rgb24, i|
+      Palette.config[@variant].each.with_index do |rgb24, i|
         @index_rgb[rgb24] = i.to_u8
         @index_rgba[rgb24_to_rgba(rgb24)] = i.to_u8
       end
@@ -41,20 +47,22 @@ module Breadbin
     end
 
     def index_to_rgba(index : UInt8)
-      rgb24_to_rgba CONFIG[@variant][index.to_i]
+      rgb24_to_rgba Palette.config[@variant][index.to_i]
+    end
+
+    private def self.load_config() : Config
+      palettes = JSON.parse(File.read(config_file))
+      palettes.each_with_object(Config.new) do |palette, config|
+        key = palette["name"].as_s
+        val = palette["spec"].as_s.split(',').map { |c| c.to_i(16) }
+        config[key] = val
+      end
     end
 
     private def self.config_file() : String
       path = ENV.fetch("BREADBIN_CONFIG_PATH", "~/.config/breadbin")
-      File.expand_path(File.join path, "palettes.json")
-    end
-
-    private def self.load_config() : Hash(String, Array(Int32))
-      palettes = JSON.parse(File.read(config_file))
-      palettes.each_with_object({} of String => Array(Int32)) do |palette, config|
-        key = palette["name"].as_s
-        val = palette["spec"].as_s.split(',').map { |c| c.to_i(16) }
-        config[key] = val
+      File.expand_path(File.join path, "palettes.json").tap do |path|
+        raise ConfigNotFound.new(path) unless File.exists?(path)
       end
     end
 
