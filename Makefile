@@ -2,4 +2,4 @@
 default: test
 
 test:
-	crystal spec
+	crystal spec -- --no-color
