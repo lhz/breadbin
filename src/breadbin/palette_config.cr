@@ -34,7 +34,7 @@ module Breadbin
     end
 
     private def self.set_config(config : String)
-      palettes = JSON.parse(config)
+      palettes = JSON.parse(config).as_a
       palettes.each_with_object(Config.new) do |palette, config|
         key = palette["name"].as_s
         val = palette["spec"].as_s.split(',').map { |c| c.to_i(16) }
