@@ -14,12 +14,13 @@ module Breadbin::Image
 
   struct Rectangle
     property x, y, w, h
-    def initialize(@x : Int32, @y : Int32, @w : Int32, @h : Int32)
+    def initialize(@x : Int32, @y : Int32, @w : Int32 = 0, @h : Int32 = 0)
     end
   end
 
   class InvalidDimensions < Exception; end
   class InvalidColors < Exception; end
+  class InvalidType < Exception; end
 
   property width   : Int32
   property height  : Int32
@@ -29,10 +30,22 @@ module Breadbin::Image
   macro included
     def self.from_png(pathname : String, rect : Tuple | Rectangle? = nil)
       png = StumpyPNG::PNG.__read(pathname)
+      if png.palette.size == 0
+        raise InvalidType.new("Image not paletted: #{pathname}")
+      end
+      if png.palette.size > 16
+        raise InvalidType.new("Image has too many colors (#{png.palette.size}): #{pathname}")
+      end
       if rect.nil?
         rect = Rectangle.new(0, 0, png.canvas.width / @@pixel_width, png.canvas.height)
       elsif rect.is_a?(Tuple)
         rect = Rectangle.new(*rect)
+        if rect.w == 0
+          rect.w = (png.canvas.width / @@pixel_width) - rect.x
+        end
+        if rect.h == 0
+          rect.h = png.canvas.height - rect.y
+        end
       end
       new(rect.w, rect.h, Palette.matching(png.palette.map &.to_rgb24)).tap do |image|
         image.convert_png png, rect

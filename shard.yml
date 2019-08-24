@@ -8,6 +8,6 @@ dependencies:
   stumpy_png:
     github: l3kn/stumpy_png
 
-crystal: 0.21.0
+crystal: 0.30.1
 
 license: MIT

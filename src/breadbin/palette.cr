@@ -27,7 +27,8 @@ module Breadbin
       @index_rgba = Hash(StumpyCore::RGBA, UInt8).new
       PaletteConfig[@variant].each.with_index do |rgb24, i|
         @index_rgb[rgb24] = i.to_u8
-        @index_rgba[rgb24_to_rgba(rgb24)] = i.to_u8
+        rgba = rgb24_to_rgba(rgb24)
+        @index_rgba[rgba] = i.to_u8
       end
     end
 

@@ -7,6 +7,8 @@
 class Breadbin::Image::Multicolor
   include Image
 
+  property fixcount : Int32
+
   alias ColorList = Tuple(UInt8, UInt8, UInt8)
 
   @@pixel_width = 2
@@ -14,6 +16,7 @@ class Breadbin::Image::Multicolor
   # Creates an image with the given *width*, *height* and *palette*.
   def initialize(@width, @height, @palette = Palette.new("colodore"))
     @pix = Pixels.new
+    @fixcount = 0
   end
 
   # Get the byte representation of the 4x1 pixel area at *x* and *y*,
@@ -50,6 +53,7 @@ class Breadbin::Image::Multicolor
         if c != bgcolor && !colors.includes?(c)
           if colfix && colfix == "nearest"
             c = nearest_color_in_set(c, colors + [bgcolor])
+            @fixcount += 1
           else
             raise InvalidColors.new("Too many colors in cell at column %d row %d: %s" %
                                     [col, row, cpix.sort.uniq.inspect])
