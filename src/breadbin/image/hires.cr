@@ -70,7 +70,7 @@ class Breadbin::Image::Hires
     bytes = Bytes.new(pad ? 9192 : 9000)
     scr = pad ? 8192 : 8000
     cells = 1000.times do |i|
-      cell = cell_at(i % 40, i / 40)
+      cell = cell_at(i % 40, i // 40)
       bytes[scr + i] = cell[0]
       8.times { |j| bytes[8 * i + j] = cell[1 + j] }
     end

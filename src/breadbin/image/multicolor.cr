@@ -124,7 +124,7 @@ class Breadbin::Image::Multicolor
     col = pad ?  9216 :  9000
     bkg = pad ? 10216 : 10000
     cells = 1000.times do |i|
-      cell = cell_at(i % 40, i / 40, bgcolor)
+      cell = cell_at(i % 40, i // 40, bgcolor)
       8.times { |j| bytes[8 * i + j] = cell[2 + j] }
       bytes[scr + i] = cell[0]
       bytes[col + i] = cell[1]
