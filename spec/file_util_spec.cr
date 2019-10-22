@@ -10,16 +10,19 @@ describe Breadbin::FileUtil do
     content = Bytes[0x78, 0xa9, 0x00, 0x8d, 0x11, 0xd0, 0x18, 0xee, 0x20, 0xd0, 0x90, 0xfb]
     filename = "/tmp/breadbin.bin"
 
-    Breadbin::FileUtil.binwrite filename, address, content
     it "it writes to the specified filename" do
+      Breadbin::FileUtil.binwrite filename, address, content
       File.exists?(filename).should eq(true)
     end
 
-    length = File.size(filename)
     it "target file has the expected length of content plus two" do
+      Breadbin::FileUtil.binwrite filename, address, content
+      length = File.size(filename)
       length.should eq(content.size + 2)
     end
 
+    Breadbin::FileUtil.binwrite filename, address, content
+    length = File.size(filename)
     buffer = Bytes.new(length)
     File.open(filename, "r") do |file|
       file.read_fully(buffer)

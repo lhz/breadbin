@@ -37,11 +37,11 @@ module Breadbin::Image
         raise InvalidType.new("Image has too many colors (#{png.palette.size}): #{pathname}")
       end
       if rect.nil?
-        rect = Rectangle.new(0, 0, png.canvas.width / @@pixel_width, png.canvas.height)
+        rect = Rectangle.new(0, 0, png.canvas.width // @@pixel_width, png.canvas.height)
       elsif rect.is_a?(Tuple)
         rect = Rectangle.new(*rect)
         if rect.w == 0
-          rect.w = (png.canvas.width / @@pixel_width) - rect.x
+          rect.w = (png.canvas.width // @@pixel_width) - rect.x
         end
         if rect.h == 0
           rect.h = png.canvas.height - rect.y
@@ -62,11 +62,11 @@ module Breadbin::Image
   end
 
   def cell_width : Int32
-    (@width * @@pixel_width / 8).ceil
+    (@width * @@pixel_width // 8).ceil
   end
 
   def cell_height : Int32
-    (@height / 8).ceil
+    (@height // 8).ceil
   end
 
   def convert_png(png : StumpyPNG::PNG, rect : Rectangle)

@@ -38,12 +38,12 @@ describe Breadbin::Image::Hires do
     end
 
     describe "#[]=" do
-      oldval = image[12, 13]
-      image[12, 13] = 1
       it "sets the color index of the pixel at the given position" do
+        oldval = image[12, 13]
+        image[12, 13] = 1
         image[12, 13].should eq(1)
+        image[12, 13] = oldval
       end
-      image[12, 13] = oldval
     end
 
     describe "#cell_at" do
