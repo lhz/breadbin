@@ -68,7 +68,7 @@ class Breadbin::Image::Multicolor
     end.to_a
     [colors[0] * 16 + colors[1], colors[2], bytes].flatten
   end
-
+  
   class TooManyUniqueChars < Exception; end
   def chars_at(x : Int32, y : Int32, cols : Int32, rows : Int32, clist : ColorList, blank : Bool = true) : Array(UInt8)
     charset = Array(UInt8).new(2048, 0_u8)
@@ -119,6 +119,7 @@ class Breadbin::Image::Multicolor
   # the following sections are page aligned
   def to_bytes(bgcolor : UInt8 = 0_u8, pad : Bool = false) : Bytes
     raise InvalidDimensions.new unless width == 160 && height == 200
+    @fixcount = 0
     bytes = Bytes.new(pad ? 10217 : 10001, 0_u8)
     scr = pad ?  8192 :  8000
     col = pad ?  9216 :  9000

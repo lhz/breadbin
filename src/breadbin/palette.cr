@@ -11,14 +11,19 @@ module Breadbin
     property variant
 
     def self.matching(colors : Array(Int32)) : Palette
+      unique = colors.uniq.reject { |c| c == 0xffffff || c == 0x000000 }
       match = PaletteConfig.variants.find do |variant|
-        colors.reject { |c|
-          c == 0xffffff # Ignore padded unused entries
-        }.all? { |rgb24|
+        # puts "Matching with #{variant}"
+        matched, unmatched = unique.partition do |rgb24|
           PaletteConfig[variant].includes? rgb24
-        }
+        end
+        # matched_str = matched.map { |c| "0x%06x" % c }.join(" ")
+        # unmatched_str = unmatched.map { |c| "0x%06x" % c }.join(" ")
+        # puts "    Matched: #{matched_str}"
+        # puts "  Unmatched: #{unmatched_str}"
+        unmatched.empty?
       end
-      raise NoMatch.new(colors.map { |c| "0x%06x" % c }.join(" ")) unless match
+      raise NoMatch.new(unique.map { |c| "0x%06x" % c }.join(" ")) unless match
       new(match)
     end
 

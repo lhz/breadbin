@@ -33,7 +33,7 @@ module Breadbin::Image
       if png.palette.size == 0
         raise InvalidType.new("Image not paletted: #{pathname}")
       end
-      if png.palette.size > 16
+      if png.palette.size > 256
         raise InvalidType.new("Image has too many colors (#{png.palette.size}): #{pathname}")
       end
       if rect.nil?
