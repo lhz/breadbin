@@ -107,11 +107,13 @@ class Breadbin::Image::Multicolor
   # *x* and *y* position, with *clist* holding the triplet of colors that should
   # be mapped to the "01", "10" and "11" bit pairs respectively
   def sprite_at(x : Int32, y : Int32, clist : ColorList) : Bytes
-    21.times.map { |row|
-      3.times.map { |col|
-        byte_at x + 4 * col, y + row, clist
+    bytes = Bytes.new(64) { 0_u8 }
+    21.times { |row|
+      3.times { |col|
+        bytes[3 * row + col] = byte_at(x + 4 * col, y + row, clist)
       }
-    }.to_a.flatten
+    }
+    bytes
   end
 
   # Get a bytes representation of an image whose dimensions are 160x200 pixels.
