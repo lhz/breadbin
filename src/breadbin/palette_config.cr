@@ -28,7 +28,7 @@ module Breadbin
 
     private def self.config_file() : String
       path = ENV.fetch(PATH_ENV, DEFAULT_PATH)
-      File.expand_path(File.join path, "palettes.json").tap do |path|
+      File.expand_path(File.join(path, "palettes.json"), home: true).tap do |path|
         raise ConfigNotFound.new(path) unless File.exists?(path)
       end
     end
