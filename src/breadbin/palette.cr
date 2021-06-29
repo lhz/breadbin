@@ -17,13 +17,18 @@ module Breadbin
         matched, unmatched = unique.partition do |rgb24|
           PaletteConfig[variant].includes? rgb24
         end
-        # matched_str = matched.map { |c| "0x%06x" % c }.join(" ")
-        # unmatched_str = unmatched.map { |c| "0x%06x" % c }.join(" ")
-        # puts "    Matched: #{matched_str}"
-        # puts "  Unmatched: #{unmatched_str}"
+        if ENV["DEBUG"]?
+          matched_str = matched.map { |c| "0x%06x" % c }.join(" ")
+          unmatched_str = unmatched.map { |c| "0x%06x" % c }.join(" ")
+          puts "#{variant}"
+          puts "    Matched: #{matched_str}"
+          puts "  Unmatched: #{unmatched_str}"
+        end
         unmatched.empty?
       end
-      raise NoMatch.new(unique.map { |c| "0x%06x" % c }.join(" ")) unless match
+      unless match
+        raise NoMatch.new(unique.map { |c| "0x%06x" % c }.join(" "))
+      end
       new(match)
     end
 

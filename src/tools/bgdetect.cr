@@ -13,6 +13,7 @@ def detect_bgcolor(png_file)
   bg, fc = -1, 9999
   COLORS.each do |c|
     image.to_bytes(c.to_u8)
+    puts "  %02d: %d" % [c, image.fixcount] if ENV["DEBUG"]?
     if image.fixcount < fc
       bg, fc = c, image.fixcount
       break if image.fixcount == 0

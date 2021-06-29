@@ -1,5 +1,5 @@
 name: breadbin
-version: 0.1.0
+version: 0.2.0
 
 authors:
   - Lars Haugseth <git@larshaugseth.com>
@@ -7,7 +7,8 @@ authors:
 dependencies:
   stumpy_png:
     github: l3kn/stumpy_png
+    version: "~> 5.0"
 
-crystal: 0.30.1
+crystal: 1.0.0
 
 license: MIT
